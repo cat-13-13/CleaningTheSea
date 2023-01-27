@@ -9,15 +9,17 @@ const game = {
     FPS: 60,
     framesIndex: 0,
     canvasSize: { w: undefined, h: undefined },
+    player: undefined,
     enemys: [],
     friends: [],
     paintballs: [],
-    // keys: {}
+    keys: {},
 
     init() {
         this.setContext()
         this.setDimension()
-        console.log(this.canvasSize.w)
+        this.createPlayer()
+        this.start()
         
     },
 
@@ -28,8 +30,52 @@ const game = {
 
     setDimension() {
         this.canvasSize = {
-            w: window.innerWidth,
-            h: window.innerHeight
+            w: window.innerWidth - 400,
+            h: window.innerHeight - 100
         }
+
+        this.canvasTag.setAttribute('width', this.canvasSize.w)
+        this.canvasTag.setAttribute('height', this.canvasSize.h)
+    },
+
+    start() {
+        setInterval(() => {
+            this.clearAll()
+            this.drawAll()
+            
+        }, 1000 / this.FPS);
+    },
+
+    createPlayer() {
+        this.player = new Player(this.ctx, this.canvasSize, this.keys)
+    },
+
+    drawPlayer() {
+        this.player.draw()
+    },
+
+    drawAll(){
+        this.drawPlayer()
+
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = 'white'
+        this.ctx.lineWidth = 5
+        this.ctx.moveTo(0, this.canvasSize.h / 4)
+        this.ctx.lineTo(this.canvasSize.w, this.canvasSize.h / 4)
+        this.ctx.stroke()
+        this.ctx.closePath()
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = 'white'
+        this.ctx.lineWidth = 5
+        this.ctx.moveTo(0, this.canvasSize.h / 2 + 40)
+        this.ctx.lineTo(this.canvasSize.w, this.canvasSize.h / 2 + 40)
+        this.ctx.stroke()
+        this.ctx.closePath()
+    },
+
+    clearAll() {
+        this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
     }
 }
