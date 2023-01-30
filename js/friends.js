@@ -3,6 +3,7 @@ class Friend {
         this.ctx = ctx
         this.canvasSize = canvasSize
         this.boardPos = randomPos
+        this.friendFrames = 0
 
         this.friendSize = {
             w: 70,
@@ -19,5 +20,6 @@ class Friend {
     draw() {
         this.ctx.fillStyle = 'yellow'
         this.ctx.fillRect(this.friendPos.x, this.friendPos.y, this.friendSize.w, this.friendSize.h)
+        this.friendFrames++
     }
 }

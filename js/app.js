@@ -14,7 +14,6 @@ const game = {
     framesIndex: 0,
 
     player: undefined,
-    bullets: [],
 
     enemies: [],
     killedEnemies: 0,
@@ -34,6 +33,7 @@ const game = {
     init() {
         this.setContext()
         this.setDimension()
+        this.setPositions()
         this.createPlayer()
         this.start()
 
@@ -53,9 +53,11 @@ const game = {
         this.canvasTag.setAttribute('width', this.canvasSize.w)
         this.canvasTag.setAttribute('height', this.canvasSize.h)
 
+    },
+
+    setPositions() {
         this.lineUpPos = this.canvasSize.h / 4
         this.lineDownPos = this.canvasSize.h / 2 + 40
-
         this.targetPos = [
             {
                 posID: 1,
@@ -88,7 +90,6 @@ const game = {
                 occupied: false
             }
         ]
-
     },
 
     start() {
@@ -105,7 +106,7 @@ const game = {
             this.collision()
 
             this.friendsLives === 0 && this.stop()
-            if (this.bullets.length === 0 && this.bulletsCount === 0) {
+            if (this.player.bullets.length === 0 && this.player.bulletsCount === 0) {
                 this.stop()
             }
 
@@ -113,6 +114,10 @@ const game = {
     },
 
     stop() {
+        this.ctx.font = "30px Comic Sans MS";
+        this.ctx.fillStyle = "red";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("GAME OVER", this.canvasSize.w / 2, this.canvasSize.h / 2)
         clearInterval(2)
     },
 
@@ -139,14 +144,14 @@ const game = {
             })
         })
 
-        this.friends.forEach(friend => {
-            this.player.bullets.forEach(bullet => {
+        this.friends.forEach((friend, i) => {
+            this.player.bullets.forEach((bullet, i) => {
                 if (bullet.bulletPos.x < friend.friendPos.x + friend.friendSize.w &&
                     bullet.bulletPos.y < friend.friendPos.y + friend.friendSize.h &&
                     bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
                     bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
-                    this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
-                    const deadFriend = this.friends.splice(this.friends.indexOf(friend), 1)
+                    this.player.bullets.splice(i)
+                    const deadFriend = this.friends.splice(i, 1)
                     deadFriend[0].boardPos.occupied = false
                     this.friendsLives--
                     document.querySelector('.deadFriends').innerHTML = this.friendsLives
@@ -157,7 +162,7 @@ const game = {
     },
 
     createPlayer() {
-        this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.keys, this.FPS, this.killedEnemies, this.bullets)
+        this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.keys, this.FPS, this.killedEnemies)
     },
 
     createEnemy() {
@@ -193,6 +198,7 @@ const game = {
         this.player.draw()
         this.drawLines()
         this.deleteBullets()
+        this.clearFriend()
 
     },
 
@@ -219,13 +225,21 @@ const game = {
     },
 
     createBullet() {
-        this.bullets.push()
+        this.player.bullets.push()
     },
 
     deleteBullets() {
-        this.bullets.forEach((bullet, i) => {
-            (bullet.bulletPos.y + bullet.radius > this.canvasSize.h) && this.bullets.splice(i)
-            console.log(this.bullets.length);
+        this.player.bullets.forEach((bullet, i) => {
+            (bullet.bulletPos.y + bullet.radius > this.canvasSize.h) && this.player.bullets.splice(i, 1)
+        })
+    },
+
+    clearFriend() {
+        this.friends.forEach((friend, i) => {
+            if (friend.friendFrames % 400 === 0) {
+                const clearedFriend = this.friends.splice(i, 1)
+                clearedFriend[0].boardPos.occupied = false
+            }
 
         })
     }

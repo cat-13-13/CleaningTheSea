@@ -1,12 +1,12 @@
 class Player {
-    constructor(ctx, canvasTag, canvasSize, keys, FPS, killedEnemys, bullets) {
+    constructor(ctx, canvasTag, canvasSize, keys, FPS, killedEnemys) {
         this.ctx = ctx
         this.canvasTag = canvasTag
         this.canvasSize = canvasSize
         this.keys = keys
         this.FPS = FPS
         this.killedEnemys = killedEnemys
-        this.bullets = bullets
+        this.bullets = []
 
         this.mousePos = {
             x: undefined,
@@ -58,11 +58,5 @@ class Player {
         })
 
     }
-
-    clearBullets() {
-        this.bullets = this.bullets.filter(bullet => bullet.bulletPos.y <= 0 && bullet.bulletPos.x >= this.canvasSize.w)
-    }
-
-
 
 }
