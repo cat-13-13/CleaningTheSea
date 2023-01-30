@@ -1,21 +1,33 @@
 const game = {
     name: '-- Game',
-    descrption: '',
+    description: '',
     version: '1.0.0',
     license: undefined,
     author: 'Catalina Fernández y Jaime Lloreda',
-    canvasTag: undefined,
+
     ctx: undefined,
+
+    canvasTag: undefined,
+    canvasSize: { w: undefined, h: undefined },
+
     FPS: 60,
     framesIndex: 0,
-    canvasSize: { w: undefined, h: undefined },
+
     player: undefined,
     bullets: [],
-    enemys: [],
+
+    enemies: [],
+    killedEnemies: 0,
+
+    targetPos: [],
+    nPositionsUp: 4,
+    nPositionsDown: 6,
     lineUpPos: undefined,
     lineDownPos: undefined,
     boardPosition: undefined,
+
     friends: [],
+
     keys: {},
 
     init() {
@@ -42,29 +54,52 @@ const game = {
 
         this.lineUpPos = this.canvasSize.h / 4
         this.lineDownPos = this.canvasSize.h / 2 + 40
+
+        this.targetPos = [
+            {
+                posID: 1,
+                x: (this.canvasSize.w / this.nPositionsUp),
+                y: this.lineUpPos,
+                occupied: false
+            },
+            {
+                posID: 2,
+                x: ((this.canvasSize.w / this.nPositionsUp) * 3),
+                y: this.lineUpPos,
+                occupied: false
+            },
+            {
+                posID: 3,
+                x: this.canvasSize.w / this.nPositionsDown,
+                y: this.lineDownPos,
+                occupied: false
+            },
+            {
+                posID: 4,
+                x: (this.canvasSize.w / this.nPositionsDown) * 3,
+                y: this.lineDownPos,
+                occupied: false
+            },
+            {
+                posID: 5,
+                x: (this.canvasSize.w / this.nPositionsDown) * 5,
+                y: this.lineDownPos,
+                occupied: false
+            }
+        ]
+
     },
 
     start() {
         setInterval(() => {
             this.clearAll()
 
-            this.framesIndex % 100 === 0 && this.createEnemys()
+            this.framesIndex % 100 === 0 && this.createEnemy()
             this.framesIndex++
 
             this.drawAll()
 
-            this.enemys.forEach(enemy => {
-                this.player.bullets.forEach(bullet => {
-                    if (bullet.bulletPos.x < enemy.enemyPos.x + enemy.enemySize.w &&
-                        bullet.bulletPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
-                        bullet.bulletPos.x + bullet.radius > enemy.enemyPos.x &&
-                        bullet.bulletPos.y + bullet.radius > enemy.enemyPos.y) {
-                        this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
-                        this.enemys.splice(this.enemys.indexOf(enemy), 1)
-                    }
-
-                })
-            })
+            this.collision()
 
         }, 1000 / this.FPS);
     },
@@ -73,22 +108,72 @@ const game = {
         clearInterval(2)
     },
 
-    createPlayer() {
-        this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.keys, this.FPS)
+    collision() {
+        this.enemies.forEach(enemy => {
+            this.player.bullets.forEach(bullet => {
+                if (bullet.bulletPos.x < enemy.enemyPos.x + enemy.enemySize.w &&
+                    bullet.bulletPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
+                    bullet.bulletPos.x + bullet.radius > enemy.enemyPos.x &&
+                    bullet.bulletPos.y + bullet.radius > enemy.enemyPos.y) {
+                    this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
+                    const deadEnemy = this.enemies.splice(this.enemies.indexOf(enemy), 1)
+                    this.killedEnemies += 1
+                    if (this.killedEnemies === 5) {
+                        this.bullets = []
+                    }
+                    deadEnemy[0].boardPos.occupied = false
+                }
+
+            })
+        })
+
+        // this.friends.forEach(friend => {
+        //     this.player.bullets.forEach(bullet => {
+        //         if (bullet.bulletPos.x < friend.friendPos.x + friend.friendSize.w &&
+        //             bullet.bulletPos.y < friend.friendPos.y + friend.friendSize.h &&
+        //             bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
+        //             bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
+        //             this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
+        //             const deadFriend = this.friends.splice(this.friends.indexOf(friend), 1)
+        //             this.killedFriends += 1
+        // if (this.killedEnemies === 5) {
+        //     this.bullets = []
+        // }
+        //             deadFriend[0].boardPos.occupied = false
+        //         }
+
+        //     })
+        // })
     },
 
-    createEnemys() {
-        this.boardPosition = Math.floor(Math.random() * 5)
+    createPlayer() {
+        this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.keys, this.FPS, this.killedEnemies, this.bullets)
+    },
 
-        this.enemys.length < 5 && this.enemys.push(new Enemy(this.ctx, this.canvasSize, this.lineUpPos, this.lineDownPos, this.boardPosition))
+    createEnemy() {
+        const filtered = this.targetPos.filter(elm => !elm.occupied)
+
+        if (filtered.length) {
+            const randomNum = Math.floor(Math.random() * filtered.length)
+            const randomPos = filtered[randomNum]
+
+            randomPos.occupied = true
+
+            this.enemies.length < 5 && this.enemies.push(new Enemy(this.ctx, this.canvasSize, randomPos))
+        }
+
     },
 
     drawAll() {
-        this.enemys.forEach(enemy => {
+        this.enemies.forEach(enemy => {
             enemy.draw()
         });
         this.player.draw()
+        this.drawLines()
 
+    },
+
+    drawLines() {
         this.ctx.beginPath()
         this.ctx.strokeStyle = 'white'
         this.ctx.lineWidth = 5

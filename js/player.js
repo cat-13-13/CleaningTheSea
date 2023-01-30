@@ -1,10 +1,12 @@
 class Player {
-    constructor(ctx, canvasTag, canvasSize, keys, FPS) {
+    constructor(ctx, canvasTag, canvasSize, keys, FPS, killedEnemys, bullets) {
         this.ctx = ctx
         this.canvasTag = canvasTag
         this.canvasSize = canvasSize
         this.keys = keys
         this.FPS = FPS
+        this.killedEnemys = killedEnemys
+        this.bullets = bullets
 
         this.mousePos = {
             x: undefined,
@@ -21,7 +23,6 @@ class Player {
             y: this.canvasSize.h - this.playerSize.h
         }
 
-        this.bullets = []
         this.bulletsCount = 0
 
         this.setListeners()
@@ -38,17 +39,17 @@ class Player {
 
     shoot() {
         this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
-        this.bulletsCount++
-        console.log(this.bulletsCount);
-
+        this.bulletsCount = this.bullets.length
     }
 
     setListeners() {
 
         this.canvasTag.onclick = (event => {
 
-            this.mousePos.x = event.offsetX
-            this.mousePos.y = event.offsetY
+            const { offsetX, offsetY } = event
+
+            this.mousePos.x = offsetX
+            this.mousePos.y = offsetY
 
             if (this.bulletsCount < 10) {
                 this.shoot()

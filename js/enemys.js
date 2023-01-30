@@ -1,43 +1,18 @@
 class Enemy {
-    constructor(ctx, canvasSize, lineUpPos, lineDownPos, boardPosition) {
+    constructor(ctx, canvasSize, randomPos) {
         this.ctx = ctx
         this.canvasSize = canvasSize
-        this.lineUpPos = lineUpPos
-        this.lineDownPos = lineDownPos
+        this.boardPos = randomPos
 
         this.enemySize = {
             w: 70,
             h: 70
         }
 
-        this.nPositionsUp = 4
-        this.nPositionsDown = 6
-        this.boardPosition = [
-            {
-                x: (this.canvasSize.w / this.nPositionsUp) - (this.enemySize.w / 2),
-                y: this.lineUpPos - this.enemySize.h
-            },
-            {
-                x: ((this.canvasSize.w / this.nPositionsUp) * 3) - (this.enemySize.w / 2),
-                y: this.lineUpPos - this.enemySize.h
-            },
-            {
-                x: this.canvasSize.w / this.nPositionsDown - (this.enemySize.w / 2),
-                y: this.lineDownPos - this.enemySize.h
-            },
-            {
-                x: (this.canvasSize.w / this.nPositionsDown) - (this.enemySize.w / 2),
-                y: this.lineDownPos - this.enemySize.h
-            },
-            {
-                x: this.canvasSize.w / this.nPositionsDown * 3 - (this.enemySize.w / 2),
-                y: this.lineDownPos - this.enemySize.h
-            }
-        ]
-
-        this.enemyPos = this.boardPosition[boardPosition]
-
-
+        this.enemyPos = {
+            x: this.boardPos.x - (this.enemySize.w / 2),
+            y: this.boardPos.y - this.enemySize.h
+        }
     }
 
     draw() {
