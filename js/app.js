@@ -27,6 +27,7 @@ const game = {
     boardPosition: undefined,
 
     friends: [],
+    friendsLives: 3,
 
     keys: {},
 
@@ -94,12 +95,19 @@ const game = {
         setInterval(() => {
             this.clearAll()
 
-            this.framesIndex % 100 === 0 && this.createEnemy()
+            document.querySelector('.bulletsCounter').innerHTML = this.player.bulletsCount
+
             this.framesIndex++
+            this.framesIndex % 100 === 0 && this.createEnemy()
+            this.framesIndex % 250 === 0 && this.createFriend()
 
             this.drawAll()
-
             this.collision()
+
+            this.friendsLives === 0 && this.stop()
+            if (this.bullets.length === 0 && this.bulletsCount === 0) {
+                this.stop()
+            }
 
         }, 1000 / this.FPS);
     },
@@ -118,32 +126,34 @@ const game = {
                     this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
                     const deadEnemy = this.enemies.splice(this.enemies.indexOf(enemy), 1)
                     this.killedEnemies += 1
-                    if (this.killedEnemies === 5) {
-                        this.bullets = []
+                    document.querySelector('.deathsCounter').innerHTML = this.killedEnemies
+
+                    if (this.killedEnemies % 5 === 0) {
+                        this.player.bulletsCount = 10
                     }
                     deadEnemy[0].boardPos.occupied = false
+                    this.player.bulletsCount === 0 && this.stop()
+
                 }
 
             })
         })
 
-        // this.friends.forEach(friend => {
-        //     this.player.bullets.forEach(bullet => {
-        //         if (bullet.bulletPos.x < friend.friendPos.x + friend.friendSize.w &&
-        //             bullet.bulletPos.y < friend.friendPos.y + friend.friendSize.h &&
-        //             bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
-        //             bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
-        //             this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
-        //             const deadFriend = this.friends.splice(this.friends.indexOf(friend), 1)
-        //             this.killedFriends += 1
-        // if (this.killedEnemies === 5) {
-        //     this.bullets = []
-        // }
-        //             deadFriend[0].boardPos.occupied = false
-        //         }
+        this.friends.forEach(friend => {
+            this.player.bullets.forEach(bullet => {
+                if (bullet.bulletPos.x < friend.friendPos.x + friend.friendSize.w &&
+                    bullet.bulletPos.y < friend.friendPos.y + friend.friendSize.h &&
+                    bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
+                    bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
+                    this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
+                    const deadFriend = this.friends.splice(this.friends.indexOf(friend), 1)
+                    deadFriend[0].boardPos.occupied = false
+                    this.friendsLives--
+                    document.querySelector('.deadFriends').innerHTML = this.friendsLives
+                }
 
-        //     })
-        // })
+            })
+        })
     },
 
     createPlayer() {
@@ -164,12 +174,25 @@ const game = {
 
     },
 
+    createFriend() {
+        const filtered = this.targetPos.filter(elm => !elm.occupied)
+
+        if (filtered.length) {
+            const randomNum = Math.floor(Math.random() * filtered.length)
+            const randomPos = filtered[randomNum]
+
+            randomPos.occupied = true
+
+            this.enemies.length < 5 && this.friends.push(new Friend(this.ctx, this.canvasSize, randomPos))
+        }
+    },
+
     drawAll() {
-        this.enemies.forEach(enemy => {
-            enemy.draw()
-        });
+        this.enemies.forEach(enemy => enemy.draw())
+        this.friends.forEach(friend => friend.draw())
         this.player.draw()
         this.drawLines()
+        this.deleteBullets()
 
     },
 
@@ -197,5 +220,13 @@ const game = {
 
     createBullet() {
         this.bullets.push()
+    },
+
+    deleteBullets() {
+        this.bullets.forEach((bullet, i) => {
+            (bullet.bulletPos.y + bullet.radius > this.canvasSize.h) && this.bullets.splice(i)
+            console.log(this.bullets.length);
+
+        })
     }
 }

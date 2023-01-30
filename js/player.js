@@ -23,7 +23,7 @@ class Player {
             y: this.canvasSize.h - this.playerSize.h
         }
 
-        this.bulletsCount = 0
+        this.bulletsCount = 10
 
         this.setListeners()
 
@@ -39,7 +39,7 @@ class Player {
 
     shoot() {
         this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
-        this.bulletsCount = this.bullets.length
+        this.bulletsCount--
     }
 
     setListeners() {
@@ -51,7 +51,7 @@ class Player {
             this.mousePos.x = offsetX
             this.mousePos.y = offsetY
 
-            if (this.bulletsCount < 10) {
+            if (this.bulletsCount > 0) {
                 this.shoot()
             }
 
