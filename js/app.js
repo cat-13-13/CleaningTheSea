@@ -30,6 +30,8 @@ const game = {
 
     keys: {},
 
+    level: 0,
+
     init() {
         this.setContext()
         this.setDimension()
@@ -100,7 +102,10 @@ const game = {
 
             this.framesIndex++
             this.framesIndex % 100 === 0 && this.createEnemy()
-            this.framesIndex % 250 === 0 && this.createFriend()
+            if (this.framesIndex % 250 === 0 && this.level > 1) {
+                this.createFriend()
+            }
+
 
             this.drawAll()
             this.collision()
@@ -110,6 +115,10 @@ const game = {
                 this.stop()
             }
 
+            if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
+                this.createLevelUp()
+                this.level++
+            }
         }, 1000 / this.FPS);
     },
 
@@ -199,7 +208,6 @@ const game = {
         this.drawLines()
         this.deleteBullets()
         this.clearFriend()
-
     },
 
     drawLines() {
@@ -242,5 +250,12 @@ const game = {
             }
 
         })
+    },
+
+    createLevelUp() {
+        this.ctx.font = "30px Comic Sans MS";
+        this.ctx.fillStyle = "blue";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("LEVEL UP!", this.canvasSize.w / 2, this.canvasSize.h / 2)
     }
 }
