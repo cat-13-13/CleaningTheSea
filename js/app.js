@@ -190,6 +190,7 @@ const game = {
             randomPos.occupied = true
 
             this.enemies.length < 5 && this.enemies.push(new Enemy(this.ctx, this.canvasSize, randomPos))
+            this.enemies[this.enemies.length - 1].randomImage()
         }
 
     },

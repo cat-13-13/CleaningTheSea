@@ -5,7 +5,7 @@ class Friend {
         this.boardPos = randomPos
         this.friendFrames = 0
 
-        this.image = new Image();
+        this.image = new Image()
         this.image.src = undefined
 
         this.friendSize = {

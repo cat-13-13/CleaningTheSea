@@ -4,12 +4,12 @@ class Enemy {
         this.canvasSize = canvasSize
         this.boardPos = randomPos
 
-        this.image = new Image();
+        this.image = new Image()
         this.image.src = undefined
 
         this.enemySize = {
-            w: 70,
-            h: 70
+            w: 100,
+            h: 120
         }
 
         this.enemyPos = {

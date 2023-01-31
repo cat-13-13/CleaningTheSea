@@ -8,6 +8,9 @@ class Player {
         this.killedEnemys = killedEnemys
         this.bullets = []
 
+        this.image = new Image()
+        this.image.src = './img/diving-goggles.png'
+
         this.mousePos = {
             x: undefined,
             y: undefined
@@ -33,8 +36,7 @@ class Player {
 
 
     draw() {
-        this.ctx.fillStyle = '#41C08B'
-        this.ctx.fillRect(this.playerPos.x, this.playerPos.y, this.playerSize.w, this.playerSize.h)
+        this.ctx.drawImage(this.image, this.playerPos.x, this.playerPos.y, this.playerSize.w, this.playerSize.h)
 
         this.bullets.forEach(bullet => bullet.draw())
     }
