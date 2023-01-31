@@ -204,6 +204,7 @@ const game = {
             randomPos.occupied = true
 
             this.enemies.length < 5 && this.friends.push(new Friend(this.ctx, this.canvasSize, randomPos))
+            this.friends[this.friends.length - 1].randomImage()
         }
     },
 

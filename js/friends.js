@@ -9,8 +9,8 @@ class Friend {
         this.image.src = undefined
 
         this.friendSize = {
-            w: 70,
-            h: 70
+            w: 140,
+            h: 140
         }
 
         this.friendPos = {
