@@ -5,6 +5,9 @@ class Friend {
         this.boardPos = randomPos
         this.friendFrames = 0
 
+        this.image = new Image();
+        this.image.src = undefined
+
         this.friendSize = {
             w: 70,
             h: 70
@@ -17,9 +20,23 @@ class Friend {
 
     }
 
+    randomImage() {
+        const images = [
+            './img/creature.png',
+            './img/fish.png',
+            './img/jellyfish.png',
+            './img/stingray.png',
+            './img/whale.png',
+        ]
+
+        const randomNum = Math.floor(Math.random() * images.length)
+        this.image.src = images[randomNum]
+    }
+
     draw() {
-        this.ctx.fillStyle = 'yellow'
-        this.ctx.fillRect(this.friendPos.x, this.friendPos.y, this.friendSize.w, this.friendSize.h)
+        this.ctx.drawImage(this.image, this.friendPos.x, this.friendPos.y, this.friendSize.w, this.friendSize.h)
+        // this.ctx.fillStyle = 'yellow'
+        // this.ctx.fillRect(this.friendPos.x, this.friendPos.y, this.friendSize.w, this.friendSize.h)
         this.friendFrames++
     }
 }

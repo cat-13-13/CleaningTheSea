@@ -13,6 +13,8 @@ const game = {
     FPS: 60,
     framesIndex: 0,
 
+    background: undefined,
+
     player: undefined,
 
     enemies: [],
@@ -36,9 +38,9 @@ const game = {
         this.setContext()
         this.setDimension()
         this.setPositions()
+        this.creatBackground()
         this.createPlayer()
         this.start()
-
     },
 
     setContext() {
@@ -174,6 +176,10 @@ const game = {
         this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.keys, this.FPS, this.killedEnemies)
     },
 
+    creatBackground() {
+        this.background = new Background(this.ctx, this.canvasSize)
+    },
+
     createEnemy() {
         const filtered = this.targetPos.filter(elm => !elm.occupied)
 
@@ -202,31 +208,32 @@ const game = {
     },
 
     drawAll() {
+        this.background.draw()
         this.enemies.forEach(enemy => enemy.draw())
         this.friends.forEach(friend => friend.draw())
         this.player.draw()
-        this.drawLines()
+        // this.drawLines()
         this.deleteBullets()
         this.clearFriend()
     },
 
-    drawLines() {
-        this.ctx.beginPath()
-        this.ctx.strokeStyle = 'white'
-        this.ctx.lineWidth = 5
-        this.ctx.moveTo(0, this.lineUpPos)
-        this.ctx.lineTo(this.canvasSize.w, this.lineUpPos)
-        this.ctx.stroke()
-        this.ctx.closePath()
+    // drawLines() {
+    //     this.ctx.beginPath()
+    //     this.ctx.strokeStyle = 'white'
+    //     this.ctx.lineWidth = 5
+    //     this.ctx.moveTo(0, this.lineUpPos)
+    //     this.ctx.lineTo(this.canvasSize.w, this.lineUpPos)
+    //     this.ctx.stroke()
+    //     this.ctx.closePath()
 
-        this.ctx.beginPath()
-        this.ctx.strokeStyle = 'white'
-        this.ctx.lineWidth = 5
-        this.ctx.moveTo(0, this.lineDownPos)
-        this.ctx.lineTo(this.canvasSize.w, this.lineDownPos)
-        this.ctx.stroke()
-        this.ctx.closePath()
-    },
+    //     this.ctx.beginPath()
+    //     this.ctx.strokeStyle = 'white'
+    //     this.ctx.lineWidth = 5
+    //     this.ctx.moveTo(0, this.lineDownPos)
+    //     this.ctx.lineTo(this.canvasSize.w, this.lineDownPos)
+    //     this.ctx.stroke()
+    //     this.ctx.closePath()
+    // },
 
     clearAll() {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
