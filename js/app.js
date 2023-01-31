@@ -208,10 +208,30 @@ const game = {
         }
     },
 
+    createBullet() {
+        this.player.bullets.push()
+    },
+
+    createLevelUp() {
+        this.ctx.font = "30px Comic Sans MS";
+        this.ctx.fillStyle = "blue";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("LEVEL UP!", this.canvasSize.w / 2, this.canvasSize.h / 2)
+    },
+
+    moveTargets() {
+        this.friends.forEach(friend => {
+            if (friend.friendPos.y < friend)
+                friend.friendSpeed.y++
+        })
+        this.friends.forEach(friend => friend.draw())
+    },
+
     drawAll() {
         this.background.draw()
         this.enemies.forEach(enemy => enemy.draw())
         this.friends.forEach(friend => friend.draw())
+
         this.player.draw()
         // this.drawLines()
         this.deleteBullets()
@@ -240,16 +260,6 @@ const game = {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
     },
 
-    createBullet() {
-        this.player.bullets.push()
-    },
-
-    deleteBullets() {
-        this.player.bullets.forEach((bullet, i) => {
-            (bullet.bulletPos.y + bullet.radius > this.canvasSize.h) && this.player.bullets.splice(i, 1)
-        })
-    },
-
     clearFriend() {
         this.friends.forEach((friend, i) => {
             if (friend.friendFrames % 400 === 0) {
@@ -260,10 +270,9 @@ const game = {
         })
     },
 
-    createLevelUp() {
-        this.ctx.font = "30px Comic Sans MS";
-        this.ctx.fillStyle = "blue";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText("LEVEL UP!", this.canvasSize.w / 2, this.canvasSize.h / 2)
-    }
+    deleteBullets() {
+        this.player.bullets.forEach((bullet, i) => {
+            (bullet.bulletPos.y + bullet.radius > this.canvasSize.h) && this.player.bullets.splice(i, 1)
+        })
+    },
 }

@@ -20,7 +20,7 @@ class Player {
 
         this.playerPos = {
             x: (this.canvasSize.w - this.playerSize.w) / 2,
-            y: this.canvasSize.h - this.playerSize.h
+            y: this.canvasSize.h - this.playerSize.h - 100
         }
 
         this.bulletsCount = 10
@@ -68,8 +68,6 @@ class Player {
             this.mousePos.x = offsetX
             this.mousePos.y = offsetY
             this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
-
-            console.log(this.bullets[this.bullets.length - 1])
 
         })
 
