@@ -14,6 +14,7 @@ const game = {
     framesIndex: 0,
 
     background: undefined,
+    backgroundTrack: new Audio('./sounds/Under-the-sea.mp3'),
 
     player: undefined,
 
@@ -41,6 +42,7 @@ const game = {
         this.creatBackground()
         this.createPlayer()
         this.start()
+        this.backgroundTrack.play()
     },
 
     setContext() {
@@ -97,6 +99,7 @@ const game = {
     },
 
     start() {
+        this.backgroundTrack.play()
         setInterval(() => {
             this.clearAll()
 

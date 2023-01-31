@@ -8,8 +8,8 @@ class Enemy {
         this.image.src = undefined
 
         this.enemySize = {
-            w: 100,
-            h: 120
+            w: 90,
+            h: 110
         }
 
         this.enemyPos = {

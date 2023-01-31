@@ -7,8 +7,8 @@ class Bullets {
         this.FPS = FPS
 
         this.bulletSize = {
-            w: 20,
-            h: 20
+            w: 40,
+            h: 40
         }
 
         this.mousePos = {
@@ -29,7 +29,7 @@ class Bullets {
         this.image = new Image()
         this.image.src = './img/soap-bubbles.png'
 
-        this.radius = 10
+        this.radius = 20
 
         this.bulletsSpeed = {
             x: (this.initBulletPos.x - this.bulletPos.x) / this.FPS * 4,
@@ -43,12 +43,6 @@ class Bullets {
     }
 
     draw() {
-        // this.ctx.beginPath()
-        // this.ctx.fillStyle = '#33c4fa'
-        // this.ctx.arc(this.bulletPos.x, this.bulletPos.y, this.radius, 0, Math.PI * 2)
-        // this.ctx.fill()
-        // this.ctx.closePath()
-
         this.ctx.drawImage(this.image, this.bulletPos.x, this.bulletPos.y, this.bulletSize.w, this.bulletSize.h)
         this.moving && this.move()
     }
