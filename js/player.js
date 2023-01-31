@@ -25,6 +25,8 @@ class Player {
 
         this.bulletsCount = 10
 
+        this.mouseIsDown = false
+
         this.setListeners()
 
     }
@@ -38,23 +40,61 @@ class Player {
     }
 
     shoot() {
-        this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
+        // this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
         this.bulletsCount--
     }
 
     setListeners() {
 
-        this.canvasTag.onclick = (event => {
+        // this.canvasTag.onclick = (event => {
+
+        //     const { offsetX, offsetY } = event
+
+        //     this.mousePos.x = offsetX
+        //     this.mousePos.y = offsetY
+
+        //     if (this.bulletsCount > 0) {
+        //         this.shoot()
+        //     }
+
+        // })
+
+        this.canvasTag.onmousedown = (event => {
+
+            this.mouseIsDown = true
 
             const { offsetX, offsetY } = event
 
             this.mousePos.x = offsetX
             this.mousePos.y = offsetY
+            this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
+
+            console.log(this.bullets[this.bullets.length - 1])
+
+        })
+
+        this.canvasTag.onmousemove = (event => {
+
+            if (this.mouseIsDown) {
+                const { offsetX, offsetY } = event
+                const shootedBullet = this.bullets[this.bullets.length - 1]
+                shootedBullet.bulletPos.x = offsetX
+                shootedBullet.bulletPos.y = offsetY
+
+                shootedBullet.bulletsSpeed.x = (shootedBullet.initBulletPos.x - shootedBullet.bulletPos.x) / this.FPS * 4
+                shootedBullet.bulletsSpeed.y = (shootedBullet.initBulletPos.y - shootedBullet.bulletPos.y) / this.FPS * 4
+            }
+        })
+
+        this.canvasTag.onmouseup = (event => {
+
+            this.mouseIsDown = false
+
+            this.bullets[this.bullets.length - 1].moving = true
 
             if (this.bulletsCount > 0) {
                 this.shoot()
             }
-
         })
 
     }

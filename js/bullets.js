@@ -11,19 +11,27 @@ class Bullets {
             y: mousePosY
         }
 
-        this.bulletPos = {
+        this.initBulletPos = {
             x: this.playerPos.x + playerSize.w / 2,
             y: this.playerPos.y
+        }
+
+        this.bulletPos = {
+            x: mousePosX,
+            y: mousePosY
         }
 
         this.radius = 10
 
         this.bulletsSpeed = {
-            x: (this.mousePos.x - this.bulletPos.x) / this.FPS,
-            y: (this.mousePos.y - this.bulletPos.y) / this.FPS
+            x: (this.initBulletPos.x - this.bulletPos.x) / this.FPS * 4,
+            y: (this.initBulletPos.y - this.bulletPos.y) / this.FPS * 4
+            // x: (this.bulletPos.x - this.mousePos.x) / this.FPS * 4,
+            // y: (this.bulletPos.y - this.mousePos.y) / this.FPS * 4
         }
 
         this.gravity = 0
+        this.moving = false
     }
 
     draw() {
@@ -32,7 +40,7 @@ class Bullets {
         this.ctx.arc(this.bulletPos.x, this.bulletPos.y, this.radius, 0, Math.PI * 2)
         this.ctx.fill()
         this.ctx.closePath()
-        this.move()
+        this.moving && this.move()
     }
 
     move() {
