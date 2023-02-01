@@ -10,7 +10,7 @@ class Friend {
 
         this.friendSize = {
             w: 140,
-            h: 140
+            h: 100
         }
 
 

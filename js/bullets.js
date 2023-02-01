@@ -34,8 +34,6 @@ class Bullets {
         this.bulletsSpeed = {
             x: (this.initBulletPos.x - this.bulletPos.x) / this.FPS * 4,
             y: (this.initBulletPos.y - this.bulletPos.y) / this.FPS * 4
-            // x: (this.bulletPos.x - this.mousePos.x) / this.FPS * 4,
-            // y: (this.bulletPos.y - this.mousePos.y) / this.FPS * 4
         }
 
         this.gravity = 0
@@ -43,7 +41,7 @@ class Bullets {
     }
 
     draw() {
-        this.ctx.drawImage(this.image, this.bulletPos.x, this.bulletPos.y, this.bulletSize.w, this.bulletSize.h)
+        this.ctx.drawImage(this.image, this.bulletPos.x - this.bulletSize.w / 2, this.bulletPos.y - this.bulletSize.h / 2, this.bulletSize.w, this.bulletSize.h)
         this.moving && this.move()
     }
 

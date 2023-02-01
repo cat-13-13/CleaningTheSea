@@ -1,8 +1,40 @@
-canvas {
-    background-color: rgb(210, 198, 198);
+#myVideo {
+    position: fixed;
+    z-index: -1;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+
+img {
+    width: 100%;
 }
 
 .game-intro {
     float: left;
-    margin: 10% 50px;
+    margin: 10px 20px;
+    width: 20%;
+    color: #b9e0ea;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 150;
+}
+
+.game-intro img {
+    width: 270px;
+}
+
+.game-info {
+    color: #f5bbaa;
+}
+
+.start-btn {
+    border: none;
+    border-radius: 5px;
+    padding: 5px 30px;
+    background-color: #9599ce;
+    color: white;
+    font-weight: 150;
 }

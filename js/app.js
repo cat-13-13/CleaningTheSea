@@ -53,7 +53,7 @@ const game = {
     setDimension() {
         this.canvasSize = {
             w: window.innerWidth - 400,
-            h: window.innerHeight - 100
+            h: window.innerHeight
         }
 
         this.canvasTag.setAttribute('width', this.canvasSize.w)
@@ -128,8 +128,8 @@ const game = {
     },
 
     stop() {
-        this.ctx.font = "30px Comic Sans MS";
-        this.ctx.fillStyle = "red";
+        this.ctx.font = "700 70px Helvetica Neue";
+        this.ctx.fillStyle = "rgb(185, 45, 45)";
         this.ctx.textAlign = "center";
         this.ctx.fillText("GAME OVER", this.canvasSize.w / 2, this.canvasSize.h / 2)
         clearInterval(2)
@@ -217,8 +217,8 @@ const game = {
     },
 
     createLevelUp() {
-        this.ctx.font = "30px Comic Sans MS";
-        this.ctx.fillStyle = "blue";
+        this.ctx.font = "200 70px Helvetica Neue";
+        this.ctx.fillStyle = "#00506d";
         this.ctx.textAlign = "center";
         this.ctx.fillText("LEVEL UP!", this.canvasSize.w / 2, this.canvasSize.h / 2)
     },
@@ -241,24 +241,6 @@ const game = {
         this.deleteBullets()
         this.clearFriend()
     },
-
-    // drawLines() {
-    //     this.ctx.beginPath()
-    //     this.ctx.strokeStyle = 'white'
-    //     this.ctx.lineWidth = 5
-    //     this.ctx.moveTo(0, this.lineUpPos)
-    //     this.ctx.lineTo(this.canvasSize.w, this.lineUpPos)
-    //     this.ctx.stroke()
-    //     this.ctx.closePath()
-
-    //     this.ctx.beginPath()
-    //     this.ctx.strokeStyle = 'white'
-    //     this.ctx.lineWidth = 5
-    //     this.ctx.moveTo(0, this.lineDownPos)
-    //     this.ctx.lineTo(this.canvasSize.w, this.lineDownPos)
-    //     this.ctx.stroke()
-    //     this.ctx.closePath()
-    // },
 
     clearAll() {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
