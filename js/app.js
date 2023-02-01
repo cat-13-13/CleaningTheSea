@@ -15,8 +15,11 @@ const game = {
 
     background: undefined,
     backgroundTrack: new Audio('./sounds/Under-the-sea.mp3'),
+    bubblesAudio: new Audio('./sounds/bubbles.mp3'),
 
     gameOverAudio: new Audio('./sounds/Game-over.mp3'),
+    collisionEnemyAudio: new Audio('./sounds/enemy-bubbles.mp3'),
+    collisionFriendAudio: new Audio('./sounds/Scream.mp3'),
     levelUpAudio: new Audio('./sounds/Level-up.mp3'),
     levelUpFrameCounter: 0,
 
@@ -34,6 +37,15 @@ const game = {
 
     friends: [],
     friendsLives: 3,
+    live: undefined,
+
+    bulletCounter: undefined,
+
+    explosion: undefined,
+    explosionPos: {
+        x: undefined,
+        y: undefined
+    },
 
     keys: {},
 
@@ -45,8 +57,14 @@ const game = {
         this.setPositions()
         this.creatBackground()
         this.createPlayer()
+        this.createLives()
+        this.createBulletCounter()
+
         this.start()
-        this.backgroundTrack.play()
+        this.bubblesAudio.play()
+        this.bubblesAudio.onended = () => {
+            this.backgroundTrack.play()
+        }
     },
 
     setContext() {
@@ -107,7 +125,7 @@ const game = {
         setInterval(() => {
             this.clearAll()
 
-            document.querySelector('.bulletsCounter').innerHTML = this.player.bulletsCount
+            document.querySelector('.level').innerHTML = this.level
 
             this.framesIndex++
             this.framesIndex % 100 === 0 && this.createEnemy()
@@ -126,7 +144,7 @@ const game = {
 
             if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
                 this.drawLevelUp()
-                this.level++
+                this.level = this.killedEnemies / 5
                 this.levelUpFrameCounter++
             } else this.levelUpFrameCounter = 0
 
@@ -152,7 +170,16 @@ const game = {
                     bullet.bulletPos.y + bullet.radius > enemy.enemyPos.y) {
                     this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
                     const deadEnemy = this.enemies.splice(this.enemies.indexOf(enemy), 1)
+
+                    this.explosionPos.x = deadEnemy[0].enemyPos.x
+                    this.explosionPos.y = deadEnemy[0].enemyPos.y
+                    this.createExplosion()
+                    this.explosion.draw(this.framesIndex)
+
+                    this.collisionEnemyAudio.play()
+
                     this.killedEnemies += 1
+
                     document.querySelector('.deathsCounter').innerHTML = this.killedEnemies
 
                     if (this.killedEnemies % 5 === 0) {
@@ -173,10 +200,20 @@ const game = {
                     bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
                     bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
                     this.player.bullets.splice(i)
+
+                    this.explosionPos.x = friend.friendPos.x
+                    this.explosionPos.y = friend.friendPos.y
+
+                    this.explosion.draw(this.framesIndex)
+                    console.log(this.explosion)
+
+
+                    this.collisionFriendAudio.play()
+
                     const deadFriend = this.friends.splice(i, 1)
                     deadFriend[0].boardPos.occupied = false
                     this.friendsLives--
-                    document.querySelector('.deadFriends').innerHTML = this.friendsLives
+
                 }
 
             })
@@ -232,13 +269,25 @@ const game = {
         this.levelUpAudio.play()
     },
 
-    moveTargets() {
-        this.friends.forEach(friend => {
-            if (friend.friendPos.y < friend)
-                friend.friendSpeed.y++
-        })
-        this.friends.forEach(friend => friend.draw())
+    createLives() {
+        this.live = new Lives(this.ctx, this.canvasSize, this.friendsLives)
     },
+
+    createBulletCounter() {
+        this.bulletCounter = new BulletCounter(this.ctx, this.canvasSize, this.player.bulletCounter)
+    },
+
+    createExplosion() {
+        this.explosion = new Explosion(this.ctx, this.canvasSize, this.explosionPos)
+    },
+
+    // moveTargets() {
+    //     this.friends.forEach(friend => {
+    //         if (friend.friendPos.y < friend)
+    //             friend.friendSpeed.y++
+    //     })
+    //     this.friends.forEach(friend => friend.draw())
+    // },
 
     drawAll() {
         this.background.draw()
@@ -248,6 +297,16 @@ const game = {
         this.player.draw()
         this.deleteBullets()
         this.clearFriend()
+
+        for (let i = 1; i <= this.friendsLives; i++) {
+            this.live.draw(i)
+        }
+
+        for (let i = this.player.bulletsCount; i > 0; i--) {
+            this.bulletCounter.draw(i)
+        }
+
+
     },
 
     clearAll() {

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoGame</title>
+    <link rel="icon" type="image/x-icon" href="./img/soap-bubbles.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="./styles/styles.css">
@@ -26,22 +27,17 @@
         <button class="start-btn">Start Game</button>
         <hr>
 
-        <p class="game-info">Bullets left: <span class="bulletsCounter">10</span></p>
-        <p class="game-info">Dead enemies: <span class="deathsCounter">0</span></p>
-        <p class="game-info">Friends left: <span class="deadFriends">3</span></p>
+        <p class="game-info">Points: <span class="deathsCounter">0</span></p>
+        <p class="game-info">Level: <span class="level">0</span></p>
 
     </div>
 
-
     <canvas class="game-board"></canvas>
 
-
-
-
-
-
-
     <script type="text/javascript" src="./js/player.js"></script>
+    <script type="text/javascript" src="./js/lives.js"></script>
+    <script type="text/javascript" src="./js/explosion.js"></script>
+    <script type="text/javascript" src="./js/bulletCounter.js"></script>
     <script type="text/javascript" src="./js/background.js"></script>
     <script type="text/javascript" src="./js/enemies.js"></script>
     <script type="text/javascript" src="./js/bullets.js"></script>
@@ -51,6 +47,3 @@
 </body>
 
 </html>
-
-
-<!-- width="1000" height="600" -->

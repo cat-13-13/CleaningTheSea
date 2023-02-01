@@ -59,5 +59,4 @@ class Bullets {
 
         this.bulletsSpeed.y += this.gravity
     }
-
 }

@@ -20,8 +20,8 @@ class Player {
         this.slingshotShootAudio = new Audio('./sounds/slingshot_shoot.mp3')
 
         this.playerSize = {
-            w: 100,
-            h: 100
+            w: 170,
+            h: 170
         }
 
         this.playerPos = {
@@ -44,6 +44,7 @@ class Player {
         this.bullets.forEach(bullet => bullet.draw())
 
         this.mouseIsDown && this.drawLines()
+
     }
 
     shoot() {
@@ -105,7 +106,7 @@ class Player {
     drawLines() {
         this.ctx.beginPath()
         this.ctx.strokeStyle = '#f2e95f'
-        this.ctx.lineWidth = 4
+        this.ctx.lineWidth = 7
         this.ctx.moveTo(this.playerPos.x, this.playerPos.y + (this.playerSize.h) / 2)
         this.ctx.lineTo(this.mousePos.x, this.mousePos.y)
         this.ctx.stroke()
@@ -113,7 +114,7 @@ class Player {
 
         this.ctx.beginPath()
         this.ctx.strokeStyle = '#f2e95f'
-        this.ctx.lineWidth = 4
+        this.ctx.lineWidth = 7
         this.ctx.moveTo(this.playerPos.x + this.playerSize.w, this.playerPos.y + (this.playerSize.h) / 2)
         this.ctx.lineTo(this.mousePos.x, this.mousePos.y)
         this.ctx.stroke()
