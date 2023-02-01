@@ -16,6 +16,10 @@ const game = {
     background: undefined,
     backgroundTrack: new Audio('./sounds/Under-the-sea.mp3'),
 
+    gameOverAudio: new Audio('./sounds/Game-over.mp3'),
+    levelUpAudio: new Audio('./sounds/Level-up.mp3'),
+    levelUpFrameCounter: 0,
+
     player: undefined,
 
     enemies: [],
@@ -121,9 +125,11 @@ const game = {
             }
 
             if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
-                this.createLevelUp()
+                this.drawLevelUp()
                 this.level++
-            }
+                this.levelUpFrameCounter++
+            } else this.levelUpFrameCounter = 0
+
         }, 1000 / this.FPS);
     },
 
@@ -133,6 +139,8 @@ const game = {
         this.ctx.textAlign = "center";
         this.ctx.fillText("GAME OVER", this.canvasSize.w / 2, this.canvasSize.h / 2)
         clearInterval(2)
+        this.backgroundTrack.pause()
+        this.gameOverAudio.play()
     },
 
     collision() {
@@ -221,6 +229,7 @@ const game = {
         this.ctx.fillStyle = "#00506d";
         this.ctx.textAlign = "center";
         this.ctx.fillText("LEVEL UP!", this.canvasSize.w / 2, this.canvasSize.h / 2)
+        this.levelUpAudio.play()
     },
 
     moveTargets() {
@@ -237,7 +246,6 @@ const game = {
         this.friends.forEach(friend => friend.draw())
 
         this.player.draw()
-        // this.drawLines()
         this.deleteBullets()
         this.clearFriend()
     },
@@ -261,4 +269,10 @@ const game = {
             (bullet.bulletPos.y + bullet.radius > this.canvasSize.h) && this.player.bullets.splice(i, 1)
         })
     },
+
+    drawLevelUp() {
+        if (this.levelUpFrameCounter < 100) {
+            this.createLevelUp()
+        }
+    }
 }

@@ -16,6 +16,9 @@ class Player {
             y: undefined
         }
 
+        this.slingshotStretchAudio = new Audio('./sounds/slingshot_stretch.mp3')
+        this.slingshotShootAudio = new Audio('./sounds/slingshot_shoot.mp3')
+
         this.playerSize = {
             w: 100,
             h: 100
@@ -68,6 +71,8 @@ class Player {
         this.canvasTag.onmousemove = (event => {
 
             if (this.mouseIsDown) {
+                this.slingshotStretchAudio.play()
+
                 const { offsetX, offsetY } = event
 
                 const shootedBullet = this.bullets[this.bullets.length - 1]
@@ -85,7 +90,7 @@ class Player {
         this.canvasTag.onmouseup = (event => {
 
             if (this.bulletsCount > 0) {
-                console.log(this.bulletsCount)
+                this.slingshotShootAudio.play()
                 this.shoot()
             }
 
