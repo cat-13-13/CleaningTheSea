@@ -22,6 +22,7 @@ class Explosion {
     }
 
     draw(framesIndex) {
+        // this.ctx.drawImage(this.image, this.explosionPos.x, this.explosionPos.y, this.explosionSize.w, this.explosionSize.h)
         this.ctx.drawImage(this.image, this.image.width / this.image.frames * this.image.framesIndex, 0, this.image.width / this.image.frames, this.image.height, this.explosionPos.x, this.explosionPos.y, this.explosionSize.w, this.explosionSize.h)
 
         this.animate(framesIndex)
@@ -29,7 +30,8 @@ class Explosion {
     }
 
     animate(framesIndex) {
-        if (framesIndex % 4 == 0) {
+
+        if (framesIndex % 12 == 0) {
             this.image.framesIndex++;
         }
 

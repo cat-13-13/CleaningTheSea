@@ -41,7 +41,7 @@ const game = {
 
     bulletCounter: undefined,
 
-    explosion: undefined,
+    explosion: [],
     explosionPos: {
         x: undefined,
         y: undefined
@@ -128,8 +128,8 @@ const game = {
             document.querySelector('.level').innerHTML = this.level
 
             this.framesIndex++
-            this.framesIndex % 100 === 0 && this.createEnemy()
-            if (this.framesIndex % 250 === 0 && this.level > 1) {
+            this.framesIndex % 200 === 0 && this.createEnemy()
+            if (this.framesIndex % 250 === 0 && this.level >= 1) {
                 this.createFriend()
             }
 
@@ -174,7 +174,9 @@ const game = {
                     this.explosionPos.x = deadEnemy[0].enemyPos.x
                     this.explosionPos.y = deadEnemy[0].enemyPos.y
                     this.createExplosion()
-                    this.explosion.draw(this.framesIndex)
+                    setTimeout(() => {
+                        this.explosion.shift()
+                    }, 1000);
 
                     this.collisionEnemyAudio.play()
 
@@ -204,9 +206,10 @@ const game = {
                     this.explosionPos.x = friend.friendPos.x
                     this.explosionPos.y = friend.friendPos.y
 
-                    this.explosion.draw(this.framesIndex)
-                    console.log(this.explosion)
-
+                    this.createExplosion()
+                    setTimeout(() => {
+                        this.explosion.shift()
+                    }, 1000);
 
                     this.collisionFriendAudio.play()
 
@@ -278,7 +281,7 @@ const game = {
     },
 
     createExplosion() {
-        this.explosion = new Explosion(this.ctx, this.canvasSize, this.explosionPos)
+        this.explosion.push(new Explosion(this.ctx, this.canvasSize, this.explosionPos))
     },
 
     // moveTargets() {
@@ -306,6 +309,7 @@ const game = {
             this.bulletCounter.draw(i)
         }
 
+        this.explosion.forEach(elm => elm.draw(this.framesIndex))
 
     },
 
