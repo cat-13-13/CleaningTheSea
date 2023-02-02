@@ -13,20 +13,13 @@ class Friend {
             h: 100
         }
 
-
         this.friendPos = {
             x: this.boardPos.x - (this.friendSize.w / 2),
             y: this.boardPos.y - this.friendSize.h
         }
 
-        // this.friendOriginalPos = {
-        //     x: this.friendPos.x,
-        //     y: this.friendPos.y
-        // }
-
         this.friendSpeed = {
-            x: undefined,
-            y: 1000 / 5
+            x: 0
         }
 
     }
@@ -47,18 +40,13 @@ class Friend {
     draw() {
         this.ctx.drawImage(this.image, this.friendPos.x, this.friendPos.y, this.friendSize.w, this.friendSize.h)
         this.friendFrames++
-        // this.move()
     }
 
-    // move() {
-    //     // this.friendPos.x += this.friendSpeed.x
-    //     this.friendPos.y += this.friendSpeed.y
+    move() {
+        this.friendPos.x += this.friendSpeed.x
 
-    //     // if (this.friendPos.x < this.friendOriginalPos.x + 10) {
-    //     //     this.friendSpeed.x *= -1
-    //     // }
-    //     if (this.friendPos.y < this.friendOriginalPos.y + 10 || this.friendPos.y > this.friendOriginalPos.y - 10) {
-    //         this.friendSpeed.y *= -1
-    //     }
-    // }
+        if (this.friendPos.x >= this.canvasSize.w) {
+            this.friendPos.x = 0
+        }
+    }
 }

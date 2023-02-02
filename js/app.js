@@ -133,6 +133,16 @@ const game = {
                 this.createFriend()
             }
 
+            this.level > 2 && this.enemies.forEach(enemy => {
+                enemy.enemySpeed.x = 1
+                enemy.move()
+            })
+
+            this.level > 3 && this.friends.forEach(friend => {
+                friend.friendSpeed.x = 1
+                friend.move()
+            })
+
 
             this.drawAll()
             this.collision()
@@ -283,14 +293,6 @@ const game = {
     createExplosion() {
         this.explosion.push(new Explosion(this.ctx, this.canvasSize, this.explosionPos))
     },
-
-    // moveTargets() {
-    //     this.friends.forEach(friend => {
-    //         if (friend.friendPos.y < friend)
-    //             friend.friendSpeed.y++
-    //     })
-    //     this.friends.forEach(friend => friend.draw())
-    // },
 
     drawAll() {
         this.background.draw()

@@ -16,6 +16,10 @@ class Enemy {
             x: this.boardPos.x - (this.enemySize.w / 2),
             y: this.boardPos.y - this.enemySize.h
         }
+
+        this.enemySpeed = {
+            x: 0
+        }
     }
 
     randomImage() {
@@ -32,5 +36,13 @@ class Enemy {
 
     draw() {
         this.ctx.drawImage(this.image, this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
+    }
+
+    move() {
+        this.enemyPos.x += this.enemySpeed.x
+
+        if (this.enemyPos.x >= this.canvasSize.w) {
+            this.enemyPos.x = 0
+        }
     }
 }
