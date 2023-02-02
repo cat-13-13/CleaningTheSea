@@ -21,10 +21,13 @@ const game = {
     collisionEnemyAudio: new Audio('./sounds/enemy-bubbles.mp3'),
     collisionFriendAudio: new Audio('./sounds/Scream.mp3'),
     levelUpAudio: new Audio('./sounds/Level-up.mp3'),
+    victoryAudio: new Audio('./sounds/victory.mp3'),
+
     levelUpFrameCounter: 0,
 
     levelUpImage: undefined,
     gameOverImage: undefined,
+    victoryImage: undefined,
 
     player: undefined,
 
@@ -64,6 +67,7 @@ const game = {
         this.createBulletCounter()
         this.createLevelUp()
         this.createGameOver()
+        this.createVictory()
 
         this.start()
         this.bubblesAudio.play()
@@ -161,7 +165,7 @@ const game = {
             }
 
             if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
-                this.drawLevelUp()
+                this.killedEnemies < 30 && this.drawLevelUp()
                 this.level = Math.floor(this.killedEnemies / 5)
                 this.levelUpFrameCounter++
             } else this.levelUpFrameCounter = 0
@@ -173,10 +177,10 @@ const game = {
         this.gameOverImage.draw()
         this.backgroundTrack.pause()
         this.gameOverAudio.play()
-        // setTimeout(() => {
-        //     alert("Ups! Do you wanna try again?")
-        //     window.location.reload()
-        // }, 1000);
+        setTimeout(() => {
+            alert("Ups! Do you wanna try again?")
+            window.location.reload()
+        }, 1000);
     },
 
     collision() {
@@ -284,12 +288,15 @@ const game = {
 
     createLevelUp() {
         this.levelUpImage = new LevelUp(this.ctx, this.canvasSize)
-        this.levelUpAudio.play()
     },
 
     createGameOver() {
         this.gameOverImage = new GameOver(this.ctx, this.canvasSize)
 
+    },
+
+    createVictory() {
+        this.victoryImage = new Victory(this.ctx, this.canvasSize)
     },
 
     createLives() {
@@ -323,6 +330,8 @@ const game = {
 
         this.explosion.forEach(elm => elm.draw(this.framesIndex))
 
+        this.killedEnemies === 30 && this.drawVictory()
+
     },
 
     clearAll() {
@@ -348,10 +357,17 @@ const game = {
     drawLevelUp() {
         if (this.levelUpFrameCounter < 100) {
             this.levelUpImage.draw()
+            this.levelUpAudio.play()
         }
     },
 
     drawGameOver() {
         this.gameOverImage.draw()
+    },
+
+    drawVictory() {
+        this.victoryImage.draw()
+        this.backgroundTrack.pause()
+        this.victoryAudio.play()
     }
 }

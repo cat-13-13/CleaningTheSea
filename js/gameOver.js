@@ -4,7 +4,7 @@ class GameOver {
         this.canvasSize = canvasSize
 
         this.image = new Image();
-        this.image.src = './img/game-over.png.jpg'
+        this.image.src = './img/game-over.png'
 
         this.gameOverPos = {
             x: 0,
