@@ -44,7 +44,6 @@ class Player {
         this.bullets.forEach(bullet => bullet.draw())
 
         this.mouseIsDown && this.drawLines()
-
     }
 
     shoot() {

@@ -23,10 +23,13 @@ const game = {
     levelUpAudio: new Audio('./sounds/Level-up.mp3'),
     levelUpFrameCounter: 0,
 
+    levelUpImage: undefined,
+    gameOverImage: undefined,
+
     player: undefined,
 
     enemies: [],
-    killedEnemies: 0,
+    killedEnemies: 0, //POINTS
 
     targetPos: [],
     nPositionsUp: 4,
@@ -59,6 +62,8 @@ const game = {
         this.createPlayer()
         this.createLives()
         this.createBulletCounter()
+        this.createLevelUp()
+        this.createGameOver()
 
         this.start()
         this.bubblesAudio.play()
@@ -135,14 +140,14 @@ const game = {
 
             if (this.level > 1) {
                 this.enemies.forEach(enemy => {
-                    enemy.enemySpeed.x = this.level - 2
+                    enemy.enemySpeed.x = this.level - 1
                     enemy.move()
                 })
             }
 
             if (this.level > 2) {
                 this.friends.forEach(friend => {
-                    friend.friendSpeed.x = this.level - 2
+                    friend.friendSpeed.x = this.level - 1
                     friend.move()
                 })
             }
@@ -158,9 +163,6 @@ const game = {
             if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
                 this.drawLevelUp()
                 this.level = Math.floor(this.killedEnemies / 5)
-
-                console.log(this.level)
-
                 this.levelUpFrameCounter++
             } else this.levelUpFrameCounter = 0
 
@@ -168,13 +170,13 @@ const game = {
     },
 
     stop() {
-        this.ctx.font = "700 70px Helvetica Neue";
-        this.ctx.fillStyle = "rgb(185, 45, 45)";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText("GAME OVER", this.canvasSize.w / 2, this.canvasSize.h / 2)
-        clearInterval(2)
+        this.gameOverImage.draw()
         this.backgroundTrack.pause()
         this.gameOverAudio.play()
+        // setTimeout(() => {
+        //     alert("Ups! Do you wanna try again?")
+        //     window.location.reload()
+        // }, 1000);
     },
 
     collision() {
@@ -281,11 +283,13 @@ const game = {
     },
 
     createLevelUp() {
-        this.ctx.font = "200 70px Helvetica Neue";
-        this.ctx.fillStyle = "#00506d";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText("LEVEL UP!", this.canvasSize.w / 2, this.canvasSize.h / 2)
+        this.levelUpImage = new LevelUp(this.ctx, this.canvasSize)
         this.levelUpAudio.play()
+    },
+
+    createGameOver() {
+        this.gameOverImage = new GameOver(this.ctx, this.canvasSize)
+
     },
 
     createLives() {
@@ -343,7 +347,11 @@ const game = {
 
     drawLevelUp() {
         if (this.levelUpFrameCounter < 100) {
-            this.createLevelUp()
+            this.levelUpImage.draw()
         }
+    },
+
+    drawGameOver() {
+        this.gameOverImage.draw()
     }
 }
