@@ -133,16 +133,19 @@ const game = {
                 this.createFriend()
             }
 
-            this.level > 2 && this.enemies.forEach(enemy => {
-                enemy.enemySpeed.x = 1
-                enemy.move()
-            })
+            if (this.level > 1) {
+                this.enemies.forEach(enemy => {
+                    enemy.enemySpeed.x = this.level - 2
+                    enemy.move()
+                })
+            }
 
-            this.level > 3 && this.friends.forEach(friend => {
-                friend.friendSpeed.x = 1
-                friend.move()
-            })
-
+            if (this.level > 2) {
+                this.friends.forEach(friend => {
+                    friend.friendSpeed.x = this.level - 2
+                    friend.move()
+                })
+            }
 
             this.drawAll()
             this.collision()
@@ -154,7 +157,10 @@ const game = {
 
             if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
                 this.drawLevelUp()
-                this.level = this.killedEnemies / 5
+                this.level = Math.floor(this.killedEnemies / 5)
+
+                console.log(this.level)
+
                 this.levelUpFrameCounter++
             } else this.levelUpFrameCounter = 0
 
