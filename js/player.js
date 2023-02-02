@@ -1,23 +1,13 @@
 class Player {
-    constructor(ctx, canvasTag, canvasSize, keys, FPS, killedEnemys) {
+    constructor(ctx, canvasTag, canvasSize, FPS, killedEnemys) {
         this.ctx = ctx
         this.canvasTag = canvasTag
         this.canvasSize = canvasSize
-        this.keys = keys
         this.FPS = FPS
         this.killedEnemys = killedEnemys
-        this.bullets = []
 
         this.image = new Image()
         this.image.src = './img/diving-goggles.png'
-
-        this.mousePos = {
-            x: undefined,
-            y: undefined
-        }
-
-        this.slingshotStretchAudio = new Audio('./sounds/slingshot_stretch.mp3')
-        this.slingshotShootAudio = new Audio('./sounds/slingshot_shoot.mp3')
 
         this.playerSize = {
             w: 170,
@@ -29,12 +19,20 @@ class Player {
             y: this.canvasSize.h - this.playerSize.h - 100
         }
 
-        this.bulletsCount = 10
+        this.mousePos = {
+            x: undefined,
+            y: undefined
+        }
 
         this.mouseIsDown = false
 
+        this.bullets = []
+        this.bulletsCount = 10
+
         this.setListeners()
 
+        this.slingshotStretchAudio = new Audio('./sounds/slingshot_stretch.mp3')
+        this.slingshotShootAudio = new Audio('./sounds/slingshot_shoot.mp3')
     }
 
 
@@ -44,6 +42,24 @@ class Player {
         this.bullets.forEach(bullet => bullet.draw())
 
         this.mouseIsDown && this.drawLines()
+    }
+
+    drawLines() {
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = '#f2e95f'
+        this.ctx.lineWidth = 7
+        this.ctx.moveTo(this.playerPos.x, this.playerPos.y + (this.playerSize.h) / 2)
+        this.ctx.lineTo(this.mousePos.x, this.mousePos.y)
+        this.ctx.stroke()
+        this.ctx.closePath()
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = '#f2e95f'
+        this.ctx.lineWidth = 7
+        this.ctx.moveTo(this.playerPos.x + this.playerSize.w, this.playerPos.y + (this.playerSize.h) / 2)
+        this.ctx.lineTo(this.mousePos.x, this.mousePos.y)
+        this.ctx.stroke()
+        this.ctx.closePath()
     }
 
     shoot() {
@@ -57,15 +73,10 @@ class Player {
             this.mouseIsDown = true
 
             const { offsetX, offsetY } = event
-
             this.mousePos.x = offsetX
             this.mousePos.y = offsetY
 
-            if (this.bulletsCount > 0) {
-                this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
-
-            }
-
+            this.bulletsCount > 0 && this.bullets.push(new Bullets(this.ctx, this.canvasSize, this.playerPos, this.playerSize, this.FPS, this.mousePos.x, this.mousePos.y))
         })
 
         this.canvasTag.onmousemove = (event => {
@@ -97,27 +108,6 @@ class Player {
             this.mouseIsDown = false
 
             this.bullets[this.bullets.length - 1].moving = true
-
         })
-
     }
-
-    drawLines() {
-        this.ctx.beginPath()
-        this.ctx.strokeStyle = '#f2e95f'
-        this.ctx.lineWidth = 7
-        this.ctx.moveTo(this.playerPos.x, this.playerPos.y + (this.playerSize.h) / 2)
-        this.ctx.lineTo(this.mousePos.x, this.mousePos.y)
-        this.ctx.stroke()
-        this.ctx.closePath()
-
-        this.ctx.beginPath()
-        this.ctx.strokeStyle = '#f2e95f'
-        this.ctx.lineWidth = 7
-        this.ctx.moveTo(this.playerPos.x + this.playerSize.w, this.playerPos.y + (this.playerSize.h) / 2)
-        this.ctx.lineTo(this.mousePos.x, this.mousePos.y)
-        this.ctx.stroke()
-        this.ctx.closePath()
-    }
-
 }

@@ -6,15 +6,15 @@ class Bullets {
         this.playerSize = playerSize
         this.FPS = FPS
 
+        this.image = new Image()
+        this.image.src = './img/soap-bubbles.png'
+
         this.bulletSize = {
             w: 40,
             h: 40
         }
 
-        this.mousePos = {
-            x: mousePosX,
-            y: mousePosY
-        }
+        this.radius = 20
 
         this.initBulletPos = {
             x: this.playerPos.x + playerSize.w / 2,
@@ -26,17 +26,16 @@ class Bullets {
             y: mousePosY
         }
 
-        this.image = new Image()
-        this.image.src = './img/soap-bubbles.png'
-
-        this.radius = 20
+        this.mousePos = {
+            x: mousePosX,
+            y: mousePosY
+        }
 
         this.bulletsSpeed = {
             x: (this.initBulletPos.x - this.bulletPos.x) / this.FPS * 4,
             y: (this.initBulletPos.y - this.bulletPos.y) / this.FPS * 4
         }
 
-        this.gravity = 0
         this.moving = false
     }
 
@@ -56,7 +55,5 @@ class Bullets {
         if (this.bulletPos.x >= this.canvasSize.w - this.radius || this.bulletPos.x <= 0) {
             this.bulletsSpeed.x *= -1
         }
-
-        this.bulletsSpeed.y += this.gravity
     }
 }

@@ -14,25 +14,14 @@ const game = {
     framesIndex: 0,
 
     background: undefined,
-    backgroundTrack: new Audio('./sounds/Under-the-sea.mp3'),
-    bubblesAudio: new Audio('./sounds/bubbles.mp3'),
 
-    gameOverAudio: new Audio('./sounds/Game-over.mp3'),
-    collisionEnemyAudio: new Audio('./sounds/enemy-bubbles.mp3'),
-    collisionFriendAudio: new Audio('./sounds/Scream.mp3'),
-    levelUpAudio: new Audio('./sounds/Level-up.mp3'),
-    victoryAudio: new Audio('./sounds/victory.mp3'),
-
+    level: 0,
     levelUpFrameCounter: 0,
-
     levelUpImage: undefined,
-    gameOverImage: undefined,
-    victoryImage: undefined,
 
     player: undefined,
 
-    enemies: [],
-    killedEnemies: 0, //POINTS
+    bulletCounter: undefined,
 
     targetPos: [],
     nPositionsUp: 4,
@@ -41,11 +30,12 @@ const game = {
     lineDownPos: undefined,
     boardPosition: undefined,
 
+    enemies: [],
+    killedEnemies: 0, //POINTS
+
     friends: [],
     friendsLives: 3,
     live: undefined,
-
-    bulletCounter: undefined,
 
     explosion: [],
     explosionPos: {
@@ -53,9 +43,16 @@ const game = {
         y: undefined
     },
 
-    keys: {},
+    gameOverImage: undefined,
+    victoryImage: undefined,
 
-    level: 0,
+    backgroundTrack: new Audio('./sounds/Under-the-sea.mp3'),
+    bubblesAudio: new Audio('./sounds/bubbles.mp3'),
+    gameOverAudio: new Audio('./sounds/Game-over.mp3'),
+    collisionEnemyAudio: new Audio('./sounds/enemy-bubbles.mp3'),
+    collisionFriendAudio: new Audio('./sounds/Scream.mp3'),
+    levelUpAudio: new Audio('./sounds/Level-up.mp3'),
+    victoryAudio: new Audio('./sounds/victory.mp3'),
 
     init() {
         this.setContext()
@@ -89,7 +86,6 @@ const game = {
 
         this.canvasTag.setAttribute('width', this.canvasSize.w)
         this.canvasTag.setAttribute('height', this.canvasSize.h)
-
     },
 
     setPositions() {
@@ -97,31 +93,26 @@ const game = {
         this.lineDownPos = this.canvasSize.h / 2 + 40
         this.targetPos = [
             {
-                posID: 1,
                 x: (this.canvasSize.w / this.nPositionsUp),
                 y: this.lineUpPos,
                 occupied: false
             },
             {
-                posID: 2,
                 x: ((this.canvasSize.w / this.nPositionsUp) * 3),
                 y: this.lineUpPos,
                 occupied: false
             },
             {
-                posID: 3,
                 x: this.canvasSize.w / this.nPositionsDown,
                 y: this.lineDownPos,
                 occupied: false
             },
             {
-                posID: 4,
                 x: (this.canvasSize.w / this.nPositionsDown) * 3,
                 y: this.lineDownPos,
                 occupied: false
             },
             {
-                posID: 5,
                 x: (this.canvasSize.w / this.nPositionsDown) * 5,
                 y: this.lineDownPos,
                 occupied: false
@@ -131,10 +122,9 @@ const game = {
 
     start() {
         this.backgroundTrack.play()
+
         setInterval(() => {
             this.clearAll()
-
-            document.querySelector('.level').innerHTML = this.level
 
             this.framesIndex++
             this.framesIndex % 200 === 0 && this.createEnemy()
@@ -142,115 +132,49 @@ const game = {
                 this.createFriend()
             }
 
-            if (this.level > 1) {
-                this.enemies.forEach(enemy => {
-                    enemy.enemySpeed.x = this.level - 1
-                    enemy.move()
-                })
-            }
-
-            if (this.level > 2) {
-                this.friends.forEach(friend => {
-                    friend.friendSpeed.x = this.level - 1
-                    friend.move()
-                })
-            }
-
             this.drawAll()
             this.collision()
+            this.updateSpeed()
+            this.levelUp()
 
             this.friendsLives === 0 && this.stop()
             if (this.player.bullets.length === 0 && this.player.bulletsCount === 0) {
                 this.stop()
             }
-
-            if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
-                this.killedEnemies < 30 && this.drawLevelUp()
-                this.level = Math.floor(this.killedEnemies / 5)
-                this.levelUpFrameCounter++
-            } else this.levelUpFrameCounter = 0
-
         }, 1000 / this.FPS);
-    },
-
-    stop() {
-        this.gameOverImage.draw()
-        this.backgroundTrack.pause()
-        this.gameOverAudio.play()
-        setTimeout(() => {
-            alert("Ups! Do you wanna try again?")
-            window.location.reload()
-        }, 1000);
-    },
-
-    collision() {
-        this.enemies.forEach(enemy => {
-            this.player.bullets.forEach(bullet => {
-                if (bullet.bulletPos.x < enemy.enemyPos.x + enemy.enemySize.w &&
-                    bullet.bulletPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
-                    bullet.bulletPos.x + bullet.radius > enemy.enemyPos.x &&
-                    bullet.bulletPos.y + bullet.radius > enemy.enemyPos.y) {
-                    this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
-                    const deadEnemy = this.enemies.splice(this.enemies.indexOf(enemy), 1)
-
-                    this.explosionPos.x = deadEnemy[0].enemyPos.x
-                    this.explosionPos.y = deadEnemy[0].enemyPos.y
-                    this.createExplosion()
-                    setTimeout(() => {
-                        this.explosion.shift()
-                    }, 1000);
-
-                    this.collisionEnemyAudio.play()
-
-                    this.killedEnemies += 1
-
-                    document.querySelector('.deathsCounter').innerHTML = this.killedEnemies
-
-                    if (this.killedEnemies % 5 === 0) {
-                        this.player.bulletsCount = 10
-                    }
-                    deadEnemy[0].boardPos.occupied = false
-                    this.player.bulletsCount === 0 && this.stop()
-
-                }
-
-            })
-        })
-
-        this.friends.forEach((friend, i) => {
-            this.player.bullets.forEach((bullet, i) => {
-                if (bullet.bulletPos.x < friend.friendPos.x + friend.friendSize.w &&
-                    bullet.bulletPos.y < friend.friendPos.y + friend.friendSize.h &&
-                    bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
-                    bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
-                    this.player.bullets.splice(i)
-
-                    this.explosionPos.x = friend.friendPos.x
-                    this.explosionPos.y = friend.friendPos.y
-
-                    this.createExplosion()
-                    setTimeout(() => {
-                        this.explosion.shift()
-                    }, 1000);
-
-                    this.collisionFriendAudio.play()
-
-                    const deadFriend = this.friends.splice(i, 1)
-                    deadFriend[0].boardPos.occupied = false
-                    this.friendsLives--
-
-                }
-
-            })
-        })
-    },
-
-    createPlayer() {
-        this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.keys, this.FPS, this.killedEnemies)
     },
 
     creatBackground() {
         this.background = new Background(this.ctx, this.canvasSize)
+    },
+
+    createPlayer() {
+        this.player = new Player(this.ctx, this.canvasTag, this.canvasSize, this.FPS, this.killedEnemies)
+    },
+
+    createBullet() {
+        this.player.bullets.push()
+    },
+
+    createLives() {
+        this.live = new Lives(this.ctx, this.canvasSize, this.friendsLives)
+    },
+
+    createBulletCounter() {
+        this.bulletCounter = new BulletCounter(this.ctx, this.canvasSize, this.player.bulletCounter)
+    },
+
+    createLevelUp() {
+        this.levelUpImage = new LevelUp(this.ctx, this.canvasSize)
+    },
+
+    createGameOver() {
+        this.gameOverImage = new GameOver(this.ctx, this.canvasSize)
+
+    },
+
+    createVictory() {
+        this.victoryImage = new Victory(this.ctx, this.canvasSize)
     },
 
     createEnemy() {
@@ -282,34 +206,97 @@ const game = {
         }
     },
 
-    createBullet() {
-        this.player.bullets.push()
-    },
-
-    createLevelUp() {
-        this.levelUpImage = new LevelUp(this.ctx, this.canvasSize)
-    },
-
-    createGameOver() {
-        this.gameOverImage = new GameOver(this.ctx, this.canvasSize)
-
-    },
-
-    createVictory() {
-        this.victoryImage = new Victory(this.ctx, this.canvasSize)
-    },
-
-    createLives() {
-        this.live = new Lives(this.ctx, this.canvasSize, this.friendsLives)
-    },
-
-    createBulletCounter() {
-        this.bulletCounter = new BulletCounter(this.ctx, this.canvasSize, this.player.bulletCounter)
-    },
 
     createExplosion() {
         this.explosion.push(new Explosion(this.ctx, this.canvasSize, this.explosionPos))
     },
+
+
+    collision() {
+        this.enemies.forEach(enemy => {
+            this.player.bullets.forEach(bullet => {
+                if (bullet.bulletPos.x < enemy.enemyPos.x + enemy.enemySize.w &&
+                    bullet.bulletPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
+                    bullet.bulletPos.x + bullet.radius > enemy.enemyPos.x &&
+                    bullet.bulletPos.y + bullet.radius > enemy.enemyPos.y) {
+                    this.player.bullets.splice(this.player.bullets.indexOf(bullet), 1)
+                    const deadEnemy = this.enemies.splice(this.enemies.indexOf(enemy), 1)
+
+                    this.explosionPos.x = deadEnemy[0].enemyPos.x
+                    this.explosionPos.y = deadEnemy[0].enemyPos.y
+                    this.createExplosion()
+                    setTimeout(() => {
+                        this.explosion.shift()
+                    }, 1000);
+
+                    this.collisionEnemyAudio.play()
+
+                    this.killedEnemies += 1
+
+                    document.querySelector('.deathsCounter').innerHTML = this.killedEnemies
+
+                    if (this.killedEnemies % 5 === 0) {
+                        this.player.bulletsCount = 10
+                    }
+                    deadEnemy[0].boardPos.occupied = false
+                    this.player.bulletsCount === 0 && this.stop()
+                }
+            })
+        })
+
+        this.friends.forEach((friend, i) => {
+            this.player.bullets.forEach((bullet, i) => {
+                if (bullet.bulletPos.x < friend.friendPos.x + friend.friendSize.w &&
+                    bullet.bulletPos.y < friend.friendPos.y + friend.friendSize.h &&
+                    bullet.bulletPos.x + bullet.radius > friend.friendPos.x &&
+                    bullet.bulletPos.y + bullet.radius > friend.friendPos.y) {
+                    this.player.bullets.splice(i)
+
+                    this.explosionPos.x = friend.friendPos.x
+                    this.explosionPos.y = friend.friendPos.y
+
+                    this.createExplosion()
+                    setTimeout(() => {
+                        this.explosion.shift()
+                    }, 1000);
+
+                    this.collisionFriendAudio.play()
+
+                    const deadFriend = this.friends.splice(i, 1)
+                    deadFriend[0].boardPos.occupied = false
+                    this.friendsLives--
+
+                }
+
+            })
+        })
+    },
+
+    updateSpeed() {
+        if (this.level > 1) {
+            this.enemies.forEach(enemy => {
+                enemy.enemySpeed.x = this.level - 1
+                enemy.move()
+            })
+        }
+
+        if (this.level > 2) {
+            this.friends.forEach(friend => {
+                friend.friendSpeed.x = this.level - 1
+                friend.move()
+            })
+        }
+    },
+
+    levelUp() {
+        document.querySelector('.level').innerHTML = this.level
+        if (this.killedEnemies % 5 === 0 && this.killedEnemies != 0) {
+            this.killedEnemies < 30 && this.drawLevelUp()
+            this.level = Math.floor(this.killedEnemies / 5)
+            this.levelUpFrameCounter++
+        } else this.levelUpFrameCounter = 0
+    },
+
 
     drawAll() {
         this.background.draw()
@@ -334,6 +321,23 @@ const game = {
 
     },
 
+    drawLevelUp() {
+        if (this.levelUpFrameCounter < 100) {
+            this.levelUpImage.draw()
+            this.levelUpAudio.play()
+        }
+    },
+
+    drawGameOver() {
+        this.gameOverImage.draw()
+    },
+
+    drawVictory() {
+        this.victoryImage.draw()
+        this.backgroundTrack.pause()
+        this.victoryAudio.play()
+    },
+
     clearAll() {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
     },
@@ -354,20 +358,9 @@ const game = {
         })
     },
 
-    drawLevelUp() {
-        if (this.levelUpFrameCounter < 100) {
-            this.levelUpImage.draw()
-            this.levelUpAudio.play()
-        }
-    },
-
-    drawGameOver() {
+    stop() {
         this.gameOverImage.draw()
-    },
-
-    drawVictory() {
-        this.victoryImage.draw()
         this.backgroundTrack.pause()
-        this.victoryAudio.play()
+        this.gameOverAudio.play()
     }
 }
